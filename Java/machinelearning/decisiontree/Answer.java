@@ -1,10 +1,16 @@
-package machinelearning.decisiontree;
+package decisiontree;
 
-import machinelearning.general.exception.UnallowedValueException;
+import general.exception.UnallowedValueException;
 
 /*
- * T : Le type de la reponse pour la caracteristique concernee
- * U : Le type de la reponse que l'on souhaite prevoir
+ * T : Le type de la reponse pour la caracteristique concernee.
+ * 		Exemple : 
+ * 			Port de depart : String
+ * 			Age : Encadrement
+ * U : Le type de la reponse que l'on souhaite prevoir.
+ * 		Exemple :
+ * 			Cas du Titanic -> un Integer pour vivant ou mort
+ * 			Peut être autre chose -> String ("bleu", "jaune") si classification de fruit (exemple approximatif) 
  */
 
 public class Answer<T, U> {
