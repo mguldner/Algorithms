@@ -1,17 +1,19 @@
-package machinelearning.decisiontree;
+package decisiontree;
 
 import java.util.List;
 
 /*
- * Name : le nom de la caracteristique concernee
- * Value : les valeurs possibles pour la caracteristique concernee
+ * Name : le nom de la caracteristique concernee. 
+ * 		Exemple : 
+ * 			"Port de depart" -> T : String
+ * 			"Age" -> T : T : Encadrement
+ * Value : les valeurs possibles pour la caracteristique concernee. 
+ * 		Exemple : 
+ * 			"C" ou "S" ou "Q"
+ * 			x<=18 ou 18<x<50 
  */
 
 public class Feature<T> {
-
-	public enum FeatureType{
-		INTEGER, STRING, BOOLEAN, DOUBLE
-	}
 	
 	private String name;
 	private List<T> possibleValues;
