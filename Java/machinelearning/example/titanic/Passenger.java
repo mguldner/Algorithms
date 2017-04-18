@@ -1,8 +1,9 @@
-package machinelearning.example.titanic;
+package example.titanic;
 
-import machinelearning.decisiontree.Feature;
-import machinelearning.decisiontree.Feature.FeatureType;
-import machinelearning.general.DataObject;
+import java.util.List;
+
+import decisiontree.Feature;
+import general.DataObject;
 
 public class Passenger implements DataObject{
 
@@ -78,12 +79,29 @@ public class Passenger implements DataObject{
 		return survived.toString();
 	}
 
+	/*
+	 * Compare la liste des features avec les valeurs de l'objet et retourne un score pour chaque feature
+	 */
 	@Override
-	public Object getValueForFeature(Feature<FeatureType> f) {
-		switch(f.getName()){
-		case "passengerId":
-			return this.passengerId;
+	public int classificationForFeature(Feature<?> feature) {
+		switch(feature.getName()){
+		case "pClass":
+			return feature.getPossibleValues().indexOf(this.pClass);
+		case "isMale":
+			return feature.getPossibleValues().indexOf(this.isMale);
+		case "age":
+			return 
+		case "sibSpNb":
+			return feature.getPossibleValues().indexOf(this.sibSpNb);
+		case "parChNb":
+			return feature.getPossibleValues().indexOf(this.parChNb);
+		case "fare":
+			break;
+		case "embarked":
+			return feature.getPossibleValues().indexOf(this.embarked);
+		default:
+			System.err.println("Erreur : Passenger.java, methode compare, default case du switch");
 		}
-		return null;
+		return 0;
 	}
 }
