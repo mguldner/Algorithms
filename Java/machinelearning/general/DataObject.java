@@ -1,11 +1,10 @@
-package machinelearning.general;
+package general;
 
-import machinelearning.decisiontree.Feature;
-import machinelearning.decisiontree.Feature.FeatureType;
+import decisiontree.Feature;
 
 public interface DataObject {
 
 	public String getLabel();
 	
-	public Object getValueForFeature(Feature<FeatureType> f);
+	public int classificationForFeature(Feature<?> feature);
 }
