@@ -1,21 +1,20 @@
-package machinelearning.decisiontree;
-
+package decisiontree;
 
 import java.util.HashMap;
 import java.util.List;
 
-import machinelearning.decisiontree.Feature.FeatureType;
-import machinelearning.decisiontree.data.Leaf;
-import machinelearning.decisiontree.data.Tree;
-import machinelearning.general.Algorithm;
-import machinelearning.general.DataObject;
+import decisiontree.data.Leaf;
+import decisiontree.data.Tree;
+import general.Algorithm;
+import general.DataObject;
 
 /*
- * ? :  Le type de chacune des Features -> on ne le connaît pas d'avance ! 
- * 		Dans le cas du titanic, une String pour l'endroit d'embarcation, un plage de valeurs pour l'âge, etc.
- * T :  Le type de la valeur finale (la donnee que l'on cherche a prevoir). 
- * 		Dans le cas du titanic, un Integer 0 ou 1.
- * V : 	Le type de la structure de donnee d'entree choisie
+ * ? :  Le type de chacune des Features -> on ne le connait pas d'avance ! 
+ * 		Dans le cas du titanic, une String pour l'endroit d'embarcation, un plage de valeurs pour l'age, etc.
+ * T : 	Le type de la structure de donnee d'entree choisie
+ * U :  Le type de la valeur finale (la donnee que l'on cherche a prevoir). 
+ * 		Dans le cas du titanic, un Integer 0 (mort) ou 1 (vivant).
+ *
  * On obtient un arbre du type
  * 
  * 						   -----------------0---------------
@@ -27,7 +26,7 @@ import machinelearning.general.DataObject;
  * 				  0        1         0			  1        0         1
  */
 
-public final class DecisionTreeAlgorithm<T, V extends DataObject> implements Algorithm<Tree<Answer<FeatureType,T>>, V> {
+public final class DecisionTreeAlgorithm<T extends DataObject, U> implements Algorithm<T, Tree<Answer<?, U>>> {
 	
 	private int trustProbability;
 	
@@ -36,7 +35,7 @@ public final class DecisionTreeAlgorithm<T, V extends DataObject> implements Alg
 	}
 	
 	@Override
-	public Tree<Answer<?,T>> train(List<V> data, List<Feature<FeatureType>> features){
+	public Tree<Answer<?,U>> train(List<T> data, List<Feature<?>> features){
 		String bestLabel = this.mostFrequent(data);
 		if(bestLabel != null){
 			// No need to split further
@@ -45,13 +44,15 @@ public final class DecisionTreeAlgorithm<T, V extends DataObject> implements Alg
 			// Cannot split further
 			return new Leaf(bestLabel);
 		} else{
-			int[] scoreFeature = new int[features.size()];
+			int[][] scoreFeature = new int[features.size()][];
+			for(int i=0; i<features.size(); i++){
+				scoreFeature[i] = new int[features.get(i).getPossibleValues().size()];
+			}
 			// Mieux vaut boucler sur les donnees et sous-boucler sur les features que l'inverse !
-			for(V tmpData : data){
-				for(Feature<FeatureType> f : features){				
-					FeatureType dataFeature = tmpData.getValueForFeature(f);
-					for(Object value : f.getPossibleValues()){
-					}
+			for(T tmpData : data){
+				for(int i=0; i<features.size(); i++){
+					int featureClass = tmpData.classificationForFeature(features.get(i));
+					scoreFeature[i][featureClass]++;
 				}
 			}
 		}
@@ -59,15 +60,15 @@ public final class DecisionTreeAlgorithm<T, V extends DataObject> implements Alg
 	}
 	
 	@Override
-	public Tree<Answer<FeatureType,T>> test(){
+	public Tree<Answer<?,U>> test(){
 		return null;
 	}
 	
-	private String mostFrequent(List<V> data){
+	private String mostFrequent(List<T> data){
 		HashMap<String, Integer> frequency = new HashMap<>();
 		int bestFrequency = -1;
 		String bestLabel = "";
-		for(V element : data){
+		for(T element : data){
 			String tmpLabel = element.getLabel();
 			int tmpFreq = 1;
 			if(frequency.containsKey(tmpLabel)){
