@@ -64,23 +64,54 @@ public class RunExample {
 			}
 		}
 		// Listes a definir auparavant et a completer au fur et a mesure de la lecture des donnees d'entree
-		ArrayList<String> possibleEmbarcations = new ArrayList<String>();
-		possibleEmbarcations.add("C");
-		possibleEmbarcations.add("Q");
-		possibleEmbarcations.add("S");
-		Feature<String> embarcation = new Feature<String>("embarked", possibleEmbarcations);
-		
 		ArrayList<Integer> possiblePClasses = new ArrayList<Integer>();
 		possiblePClasses.add(1);
 		possiblePClasses.add(2);
 		possiblePClasses.add(3);
 		Feature<Integer> passengerClass = new Feature<Integer>("pClass", possiblePClasses);
 		
+		ArrayList<Boolean> possibleSex = new ArrayList<Boolean>();
+		possibleSex.add(true);
+		possibleSex.add(false);
+		Feature<Boolean> sex = new Feature<Boolean>("isMale", possibleSex);
+		
 		ArrayList<Frame> possibleAges = new ArrayList<Frame>();
 		possibleAges.add(new Frame(0,18));
 		possibleAges.add(new Frame(18,50));
 		possibleAges.add(new Frame(50,100));
 		Feature<Frame> age = new Feature<Frame>("age", possibleAges);
+		
+		ArrayList<Integer> possibleSibSpNb = new ArrayList<Integer>();
+		possibleSibSpNb.add(0);
+		possibleSibSpNb.add(1);
+		possibleSibSpNb.add(2);
+		possibleSibSpNb.add(3);
+		possibleSibSpNb.add(4);
+		possibleSibSpNb.add(5);
+		possibleSibSpNb.add(8);
+		Feature<Integer> sibSpNb = new Feature<Integer>("sibSpNb", possibleSibSpNb);
+		
+		ArrayList<Integer> possibleParChNb = new ArrayList<Integer>();
+		possibleParChNb.add(0);
+		possibleParChNb.add(1);
+		possibleParChNb.add(2);
+		possibleParChNb.add(3);
+		possibleParChNb.add(4);
+		possibleParChNb.add(5);
+		possibleParChNb.add(6);
+		Feature<Integer> parChNb = new Feature<Integer>("parChNb", possibleParChNb);
+		
+		ArrayList<Frame> possibleFare = new ArrayList<Frame>();
+		possibleFare.add(new Frame(0,10));
+		possibleFare.add(new Frame(10,100));
+		possibleFare.add(new Frame(100,1000));
+		Feature<Frame> fare = new Feature<Frame>("fare", possibleFare);
+		
+		ArrayList<String> possibleEmbarcations = new ArrayList<String>();
+		possibleEmbarcations.add("C");
+		possibleEmbarcations.add("Q");
+		possibleEmbarcations.add("S");
+		Feature<String> embarcation = new Feature<String>("embarked", possibleEmbarcations);
 		
 		List<Feature<?>> features = new ArrayList<Feature<?>>();
 		features.add(embarcation);
