@@ -3,6 +3,7 @@ package example.titanic;
 import java.util.List;
 
 import decisiontree.Feature;
+import example.titanic.features.Frame;
 import general.DataObject;
 
 public class Passenger implements DataObject{
@@ -80,7 +81,7 @@ public class Passenger implements DataObject{
 	}
 
 	/*
-	 * Compare la liste des features avec les valeurs de l'objet et retourne un score pour chaque feature
+	 * Compare la liste des features avec les valeurs de l'objet et retourne l'index associé
 	 */
 	@Override
 	public int classificationForFeature(Feature<?> feature) {
@@ -90,18 +91,30 @@ public class Passenger implements DataObject{
 		case "isMale":
 			return feature.getPossibleValues().indexOf(this.isMale);
 		case "age":
-			return 
+			List<Frame> frameAgeList = (List<Frame>) feature.getPossibleValues();
+			int indexAge = -1;
+			for(int i=0; i<frameAgeList.size(); i++){
+				if(this.age>=frameAgeList.get(i).getMin() && this.age<frameAgeList.get(i).getMax())
+					indexAge = i;
+			}
+			return indexAge;
 		case "sibSpNb":
 			return feature.getPossibleValues().indexOf(this.sibSpNb);
 		case "parChNb":
 			return feature.getPossibleValues().indexOf(this.parChNb);
 		case "fare":
-			break;
+			List<Frame> frameFareList = (List<Frame>) feature.getPossibleValues();
+			int indexFare = -1;
+			for(int i=0; i<frameFareList.size(); i++){
+				if(this.fare>=frameFareList.get(i).getMin() && this.fare<=frameFareList.get(i).getMax())
+					indexFare = i;
+			}
+			return indexFare;
 		case "embarked":
 			return feature.getPossibleValues().indexOf(this.embarked);
 		default:
 			System.err.println("Erreur : Passenger.java, methode compare, default case du switch");
 		}
-		return 0;
+		return -1;
 	}
 }
