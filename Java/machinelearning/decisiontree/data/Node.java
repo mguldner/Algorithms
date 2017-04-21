@@ -1,4 +1,4 @@
-package machinelearning.decisiontree.data;
+package decisiontree.data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,11 @@ public class Node<T> extends Tree<T> {
 	public Node(T value, Tree<T> parent) {
 		super(value, parent);
 		this.children = new ArrayList<>();
+	}
+	
+	public Node(T value, List<Tree<T>> children) {
+		super(value);
+		this.children = children;
 	}
 	
 	public Node(T value) {
