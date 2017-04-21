@@ -1,9 +1,11 @@
 package decisiontree;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import decisiontree.data.Leaf;
+import decisiontree.data.Node;
 import decisiontree.data.Tree;
 import general.Algorithm;
 import general.DataObject;
@@ -36,13 +38,13 @@ public final class DecisionTreeAlgorithm<T extends DataObject, U> implements Alg
 	
 	@Override
 	public Tree<Answer<?,U>> train(List<T> data, List<Feature<?>> features){
-		String bestLabel = this.mostFrequent(data);
+		Answer<?,U> bestLabel = this.mostFrequent(data);
 		if(bestLabel != null){
 			// No need to split further
-			return new Leaf(bestLabel);
+			return new Leaf<Answer<?,U>>(bestLabel);
 		} else if(features.isEmpty()){
 			// Cannot split further
-			return new Leaf(bestLabel);
+			return new Leaf<Answer<?,U>>(bestLabel);
 		} else{
 			int[][] scoreFeature = new int[features.size()][];
 			for(int i=0; i<features.size(); i++){
@@ -52,11 +54,40 @@ public final class DecisionTreeAlgorithm<T extends DataObject, U> implements Alg
 			for(T tmpData : data){
 				for(int i=0; i<features.size(); i++){
 					int featureClass = tmpData.classificationForFeature(features.get(i));
-					scoreFeature[i][featureClass]++;
+					if(featureClass != -1)
+						scoreFeature[i][featureClass]++;
 				}
 			}
+			int maxScore = -1;
+			int winnerFeature = -1;
+			for(int i=0; i<features.size(); i++){
+				int tmpScore = -1;
+				for(int j=0; j<scoreFeature[i].length; j++){
+					tmpScore = Math.max(tmpScore, scoreFeature[i][j]);
+				}
+				if(maxScore < tmpScore){
+					maxScore = tmpScore;
+					winnerFeature = i;
+				}
+			}
+			
+			Feature<?> winningFeature = features.remove(winnerFeature);
+			List<ArrayList<T>> listClassifiedData = new ArrayList<ArrayList<T>>();
+			for(int i=0; i<winningFeature.getPossibleValues().size(); i++){
+				ArrayList<T> classifiedData = new ArrayList<T>();
+				listClassifiedData.add(classifiedData);
+			}
+			for(T tmpData : data){
+				int featureClass = tmpData.classificationForFeature(winningFeature);
+				listClassifiedData.get(featureClass).add(tmpData);
+			}
+			List<Tree<Answer<?,U>>> children = new ArrayList<Tree<Answer<?,U>>>();
+			for(int i=0; i<winningFeature.getPossibleValues().size(); i++){
+				children.add(train(listClassifiedData.get(i), features));
+			}
+			Answer<?,U> nodeValue = 
+			return new Node<Answer<?,U>>();
 		}
-		return null;
 	}
 	
 	@Override
@@ -64,7 +95,7 @@ public final class DecisionTreeAlgorithm<T extends DataObject, U> implements Alg
 		return null;
 	}
 	
-	private String mostFrequent(List<T> data){
+	private Answer<?,U> mostFrequent(List<T> data){
 		HashMap<String, Integer> frequency = new HashMap<>();
 		int bestFrequency = -1;
 		String bestLabel = "";
