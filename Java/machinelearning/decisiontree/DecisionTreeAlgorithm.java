@@ -28,24 +28,31 @@ import general.DataObject;
  * 				  0        1         0			  1        0         1
  */
 
-public final class DecisionTreeAlgorithm<T extends DataObject, U> implements Algorithm<T, Tree<Answer<?, U>>> {
+public final class DecisionTreeAlgorithm<U, T extends DataObject<U>> implements Algorithm<U, T, Tree<Answer<?, U>>> {
 	
-	private int trustProbability;
+	private double trustProbability;
 	
-	public DecisionTreeAlgorithm(int trustProbability){
+	public DecisionTreeAlgorithm(double trustProbability){
 		this.trustProbability = trustProbability;
 	}
+	
+	public void setTrustProbability(double trustProbability){
+		this.trustProbability = trustProbability;
+	}
+	
+	public double getTrustProbability(){
+		return this.trustProbability;
+	}
+	
+	
 	
 	@Override
 	public Tree<Answer<?,U>> train(List<T> data, List<Feature<?>> features){
 		Answer<?,U> bestLabel = this.mostFrequent(data);
-		if(bestLabel != null){
-			// No need to split further
-			return new Leaf<Answer<?,U>>(bestLabel);
-		} else if(features.isEmpty()){
-			// Cannot split further
-			return new Leaf<Answer<?,U>>(bestLabel);
-		} else{
+		if(bestLabel != null || features.isEmpty()){
+			// No need to split further || cannot split further
+			return new Leaf<>(bestLabel);
+		} else {
 			int[][] scoreFeature = new int[features.size()][];
 			for(int i=0; i<features.size(); i++){
 				scoreFeature[i] = new int[features.get(i).getPossibleValues().size()];
@@ -85,17 +92,46 @@ public final class DecisionTreeAlgorithm<T extends DataObject, U> implements Alg
 			for(int i=0; i<winningFeature.getPossibleValues().size(); i++){
 				children.add(train(listClassifiedData.get(i), features));
 			}
-			Answer<?,U> nodeValue = 
-			return new Node<Answer<?,U>>();
+			return new Node<>(bestLabel, children);
 		}
 	}
 	
 	@Override
-	public Tree<Answer<?,U>> test(){
+	public U test(Tree<Answer<?,U>> tree, T testPoint){
+		if(tree instanceof Leaf<?>){
+			return tree.getValue().getLabel();
+		} else if (tree instanceof Node<?>){
+			
+		}
 		return null;
 	}
 	
 	private Answer<?,U> mostFrequent(List<T> data){
+		HashMap<U, MutableInt> numLabel = new HashMap<U, MutableInt>();
+		U winningLabel = null;
+		int maxScore = 1;
+		for(T element: data){
+			U tmpLabel = element.getLabel();
+			MutableInt count = numLabel.get(tmpLabel);
+			if(count == null){
+				numLabel.put(tmpLabel, new MutableInt());
+			} else {
+				count.increment();
+				int tmpScore = count.getValue();
+				if(tmpScore > maxScore){
+					maxScore = tmpScore;
+					winningLabel = tmpLabel;
+				}
+			}
+		}
+		int numberOfElements = data.size();
+		if(maxScore > numberOfElements * trustProbability)
+			return new Answer<>(winningLabel);
+		else
+			return null;
+	}
+	
+	/*private Answer<?,U> mostFrequent(List<T> data){
 		HashMap<String, Integer> frequency = new HashMap<>();
 		int bestFrequency = -1;
 		String bestLabel = "";
@@ -119,4 +155,5 @@ public final class DecisionTreeAlgorithm<T extends DataObject, U> implements Alg
 		else
 			return null;
 	}
+	*/
 }
