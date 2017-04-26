@@ -3,10 +3,10 @@ package example.titanic;
 import java.util.List;
 
 import decisiontree.Feature;
-import example.titanic.features.Frame;
+import decisiontree.features.Frame;
 import general.DataObject;
 
-public class Passenger implements DataObject{
+public class Passenger implements DataObject<Integer>{
 
 	private Integer passengerId;
 	private Integer pClass;
@@ -76,8 +76,12 @@ public class Passenger implements DataObject{
 	}
 
 	@Override
-	public String getLabel() {
-		return survived.toString();
+	public Integer getLabel() {
+		return survived;
+	}
+	
+	public void setLabel(Integer label){
+		this.survived = label;
 	}
 
 	/*
@@ -116,5 +120,20 @@ public class Passenger implements DataObject{
 			System.err.println("Erreur : Passenger.java, methode compare, default case du switch");
 		}
 		return -1;
+	}
+
+	@Override
+	public int[][] getOverview(List<Feature<?>> features) {
+		// A externaliser pour ne pas répéter l'action
+		String [][] overviewFeatures = new String[features.size()][];
+		for(int i=0; i<features.size(); i++){
+			overviewFeatures[i] = new String[features.get(i).getPossibleValues().size()];
+			for(int j=0; j<features.get(i).getPossibleValues().size(); j++){
+				overviewFeatures[i][j] = features.get(i).getPossibleValues().get(j).toString();
+			}
+		}
+		
+		
+		return null;
 	}
 }
