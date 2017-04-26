@@ -25,6 +25,12 @@ public class Answer<T, U> {
 		this.label = label;
 	}
 	
+	public Answer(U label){
+		this.question = null;
+		this.value = null;
+		this.label = label;
+	}
+	
 	public Answer(Feature<T> question){
 		this.question = question;
 	}
