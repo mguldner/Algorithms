@@ -6,11 +6,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import decisiontree.Answer;
+import decisiontree.DecisionTreeAlgorithm;
 import decisiontree.Feature;
 import decisiontree.Feature.FeatureType;
 import decisiontree.data.Node;
 import decisiontree.data.Tree;
-import example.titanic.features.Frame;
+import decisiontree.features.Frame;
+import general.Algorithm;
 import general.LossFunction;
 
 public class RunExample {
@@ -114,11 +117,18 @@ public class RunExample {
 		Feature<String> embarcation = new Feature<String>("embarked", possibleEmbarcations);
 		
 		List<Feature<?>> features = new ArrayList<Feature<?>>();
+		features.add(passengerClass);
+		features.add(sex);
+		features.add(age);
+		features.add(sibSpNb);
+		features.add(parChNb);
+		features.add(fare);
 		features.add(embarcation);
-		Tree<Answer> tree = new Node<Feature>();
-		tree.setTrainingSet();
-		tree.compute();
-		prediction = tree.getTestResult(testSet);
+		DecisionTreeAlgorithm<Integer, Passenger> decisionTreeAlgorithm = new DecisionTreeAlgorithm<Integer, Passenger>(0.8);
+		Tree<Answer<?,Integer>> treeTrained = decisionTreeAlgorithm.train(trainingSet, features);
+		for(Passenger p : testSet){
+			p.setLabel(decisionTreeAlgorithm.test(treeTrained, p));
+		}
 		
 		LossFunction lossFunction = new LossFunction();
 		reality = ;
